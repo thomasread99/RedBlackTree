@@ -24,7 +24,7 @@
     insertRB
     deleteRB
 
-  You are allowed to define any other auxiliary function you need.
+  You are allowed to define any other auxiliary function you need.test
 
 -}
 
