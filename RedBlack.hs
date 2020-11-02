@@ -81,17 +81,27 @@ leqM _ _ = True
 blackBalanced :: RBT a -> Bool
 blackBalanced LeafRB = True
 blackBalanced (NodeRB c l x r) = 
-  let diff = abs (blackHeight l - blackHeight r) in
+  let diff = abs (countBlack l - countBlack r) in
     diff <= 1 && blackBalanced l && blackBalanced r
 
 
 -- Black height of a black-balanced tree, -1 if not black-balanced
---MODIFY THIS
+--MODIFY THIS, are leaf nodes counted as black nodes, is the root node counted if black?
 blackHeight :: RBT a -> Int
 blackHeight LeafRB = 0
 blackHeight (NodeRB c l x r) = 
-  if (c == Black) then blackHeight l + blackHeight r + 1
-                  else blackHeight l + blackHeight r + 0
+  if (blackBalanced (NodeRB c l x r)) then countBlack l
+                                      else -1
+
+
+--  if (c == Black) then blackHeight l + blackHeight r + 1
+--                  else blackHeight l + blackHeight r + 0
+
+countBlack :: RBT a -> Int
+countBlack LeafRB = 0
+countBlack (NodeRB c l x r) =
+  if (c == Black) then countBlack l + countBlack r + 1
+                  else countBlack l + countBlack r + 0
 
 
 -- Check if all Red-Black Tree conditions are satisfied
