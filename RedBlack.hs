@@ -78,12 +78,20 @@ leqM _ _ = True
 -- Check the Black-balancing condition:
 --     all paths have the same number of black nodes
 
---blackBalanced :: RBT a -> Bool
+blackBalanced :: RBT a -> Bool
+blackBalanced LeafRB = True
+blackBalanced (NodeRB c l x r) = 
+  let diff = abs (blackHeight l - blackHeight r) in
+    diff <= 1 && blackBalanced l && blackBalanced r
 
 
 -- Black height of a black-balanced tree, -1 if not black-balanced
-
---blackHeight :: RBT a -> Int
+--MODIFY THIS
+blackHeight :: RBT a -> Int
+blackHeight LeafRB = 0
+blackHeight (NodeRB c l x r) = 
+  if (c == Black) then blackHeight l + blackHeight r + 1
+                  else blackHeight l + blackHeight r + 0
 
 
 -- Check if all Red-Black Tree conditions are satisfied
