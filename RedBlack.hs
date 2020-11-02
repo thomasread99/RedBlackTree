@@ -24,7 +24,7 @@
     insertRB
     deleteRB
 
-  You are allowed to define any other auxiliary function you need.test
+  You are allowed to define any other auxiliary function you need.
 
 -}
 
@@ -63,8 +63,17 @@ maxRB (NodeRB c l x r) = maxRB r
 
 -- Check if a tree satisfies the Binary Search Tree condition
 --   (do not check other RBT conditions)
---isBST :: Ord a => RBT a -> Bool
+isBST :: Ord a => RBT a -> Bool
+isBST t = boundBST Nothing t Nothing
 
+boundBST :: Ord a => Maybe a -> RBT a -> Maybe a -> Bool
+boundBST lb LeafRB rb = lb `leqM` rb
+boundBST lb (NodeRB c l x r) rb = 
+  boundBST lb l (Just x) && boundBST (Just x) r rb
+
+leqM :: Ord a => Maybe a -> Maybe a -> Bool
+leqM (Just x) (Just y) = x <= y
+leqM _ _ = True
 
 -- Check the Black-balancing condition:
 --     all paths have the same number of black nodes
