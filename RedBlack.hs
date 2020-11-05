@@ -94,9 +94,6 @@ blackHeight (NodeRB c l x r) =
                                       else -1
 
 
---  if (c == Black) then blackHeight l + blackHeight r + 1
---                  else blackHeight l + blackHeight r + 0
-
 countBlack :: RBT a -> Int
 countBlack LeafRB = 0
 countBlack (NodeRB c l x r) =
@@ -105,7 +102,31 @@ countBlack (NodeRB c l x r) =
 
 
 -- Check if all Red-Black Tree conditions are satisfied
---isRBT :: Ord a => RBT a -> Bool
+  
+isRBT :: Ord a => RBT a -> Bool
+isRBT (NodeRB c l x r) = 
+  --If the colour of the root is black then check the subtrees
+  if (c == Black) then checkNodes l && checkNodes r
+                  --Else it is not an RBT
+                  else False
+
+checkNodes :: Ord a => RBT a -> Bool
+--If you reach a leaf then true
+checkNodes LeafRB = True
+checkNodes (NodeRB c l x r) =
+  --If the colour is red and the children are black then check the subtrees, else false
+  if (c == Red) then (if (isBlack l && isBlack r) then checkNodes l && checkNodes r else False)
+                --Else check the subtree
+                else checkNodes l && checkNodes r
+
+isBlack :: Ord a => RBT a -> Bool
+--Leaves are black
+isBlack LeafRB = True
+isBlack (NodeRB c l x r) = 
+  --If the colour is black return true
+  if (c == Black) then True
+                  else False
+
 
 
 -- Insert a new element in a RBT, preserving the RBT properties
