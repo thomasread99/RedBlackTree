@@ -86,11 +86,11 @@ blackBalanced (NodeRB c l x r) =
 
 
 -- Black height of a black-balanced tree, -1 if not black-balanced
---MODIFY THIS, are leaf nodes counted as black nodes, is the root node counted if black?
+
 blackHeight :: RBT a -> Int
 blackHeight LeafRB = 0
 blackHeight (NodeRB c l x r) = 
-  if (blackBalanced (NodeRB c l x r)) then countBlack l
+  if (blackBalanced (NodeRB c l x r)) then (if (c == Black) then (countBlack l) + 1 else countBlack l)
                                       else -1
 
 
@@ -133,9 +133,14 @@ isBlack (NodeRB c l x r) =
 
 insertRB :: Ord a => a -> RBT a -> RBT a
 insertRB n LeafRB = (NodeRB Black (LeafRB) n (LeafRB))
+insertRB n (NodeRB c l x r) =
+  if n <= x then NodeRB c (insertRB n l) x r
+            else NodeRB c l x (insertRB n r)
+
+            
 
 -- Delete an element from a RBT, preserving the RBT properties
 
-deleteRB :: Ord a => a -> RBT a -> RBT a
-deleteRB n (NodeRB c l x r) = if (searchRB n (NodeRB c l x r)) then --Do a thing
-                                                               else (NodeRB c l x r)
+--deleteRB :: Ord a => a -> RBT a -> RBT a
+--deleteRB n (NodeRB c l x r) = if (searchRB n (NodeRB c l x r)) then --Do a thing
+--                                                              else (NodeRB c l x r)
