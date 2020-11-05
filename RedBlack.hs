@@ -82,7 +82,7 @@ blackBalanced :: RBT a -> Bool
 blackBalanced LeafRB = True
 blackBalanced (NodeRB c l x r) = 
   let diff = abs (countBlack l - countBlack r) in
-    diff <= 1 && blackBalanced l && blackBalanced r
+    diff == 0 && blackBalanced l && blackBalanced r
 
 
 -- Black height of a black-balanced tree, -1 if not black-balanced
@@ -102,7 +102,7 @@ countBlack (NodeRB c l x r) =
 
 
 -- Check if all Red-Black Tree conditions are satisfied
-  
+--MODIFY THIS, check if is BST and that it is black balanced
 isRBT :: Ord a => RBT a -> Bool
 isRBT (NodeRB c l x r) = 
   --If the colour of the root is black then check the subtrees
@@ -131,9 +131,11 @@ isBlack (NodeRB c l x r) =
 
 -- Insert a new element in a RBT, preserving the RBT properties
 
---insertRB :: Ord a => a -> RBT a -> RBT a
-
+insertRB :: Ord a => a -> RBT a -> RBT a
+insertRB n LeafRB = (NodeRB Black (LeafRB) n (LeafRB))
 
 -- Delete an element from a RBT, preserving the RBT properties
 
---deleteRB :: Ord a => a -> RBT a -> RBT a
+deleteRB :: Ord a => a -> RBT a -> RBT a
+deleteRB n (NodeRB c l x r) = if (searchRB n (NodeRB c l x r)) then --Do a thing
+                                                               else (NodeRB c l x r)
