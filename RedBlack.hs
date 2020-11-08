@@ -217,8 +217,8 @@ balR (NodeRB Red (NodeRB Black l x r) x2 r2) x3 r3 =
 fuse :: Ord a => RBT a -> RBT a -> RBT a
 fuse LeafRB x = x
 fuse x LeafRB = x
-fuse t1@LeafRB (NodeRB Red l x r) = NodeRB Red (fuse t1 l) x r
-fuse (NodeRB Red l x r) t3@LeafRB = NodeRB Red l x (fuse r t3)
+--fuse LeafRB (NodeRB Red l x r) = NodeRB Red l x r
+--fuse (NodeRB Red l x r) LeafRB = NodeRB Red l x r
 fuse (NodeRB Red l x r) (NodeRB Red l2 x2 r2) =
   let s = fuse r l2
   in case s of
