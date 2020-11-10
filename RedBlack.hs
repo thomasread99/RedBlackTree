@@ -164,9 +164,9 @@ balance c l x r = NodeRB c l x r
 
 
 -- Delete an element from a RBT, preserving the RBT properties
-
 deleteRB :: Ord a => a -> RBT a -> RBT a
-deleteRB n x = blackRoot (del n x)
+deleteRB n x = if (searchRB n x) then blackRoot (del n x)
+                                 else x 
 
 del :: Ord a => a -> RBT a -> RBT a
 del n LeafRB = LeafRB
@@ -186,8 +186,6 @@ delR n l x r =
                         else NodeRB Red l x (del n r)
 
 balL :: Ord a => RBT a -> a -> RBT a -> RBT a
-balL LeafRB x r = (NodeRB Black LeafRB x r)
-balL l x LeafRB = (NodeRB Black l x LeafRB)
 balL (NodeRB Red l x r) x2 r2 =
   NodeRB Red (NodeRB Black l x r) x2 r2
 balL l x (NodeRB Black l2 x2 r) =
@@ -196,8 +194,6 @@ balL l x (NodeRB Red (NodeRB Black l2 x2 r) x3 r2) =
   NodeRB Red (NodeRB Black l x l2) x2 (balance Black r x3 (redRoot r2))
 
 balR :: Ord a => RBT a -> a -> RBT a -> RBT a
-balR LeafRB x r = (NodeRB Black LeafRB x r)
-balR l x LeafRB = (NodeRB Black l x LeafRB)
 balR l x (NodeRB Red l2 x2 r) =
   NodeRB Red l x (NodeRB Black l2 x2 r)
 balR (NodeRB Black l x r) x2 r2 =
@@ -218,6 +214,7 @@ fuse (NodeRB Black l x r) (NodeRB Black l2 x2 r2) =
   in case s of
     (NodeRB Red s1 y s2) -> (NodeRB Red (NodeRB Black l x s1) y (NodeRB Black s2 x2 r))
     (NodeRB Black s1 y s2) -> balL l x (NodeRB Black s x2 r2)
+    LeafRB -> (NodeRB Red l x (NodeRB Red s x2 r2))
 
 --Auxillary function to get the colour of a node
 color :: Ord a => RBT a -> Color
