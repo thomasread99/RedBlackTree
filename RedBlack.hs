@@ -102,26 +102,20 @@ blackHeight (NodeRB c l x r) =
 -- Check if all Red-Black Tree conditions are satisfied
 isRBT :: Ord a => RBT a -> Bool
 isRBT (NodeRB c l x r) = 
-  --If the colour of the root is black, the tree is a BST and is black balanced, check the left and right subtrees for recurring red nodes
   if (c == Black) && (isBST (NodeRB c l x r)) && (blackBalanced (NodeRB c l x r)) then checkNodes l && checkNodes r                                        
                                                                                   else False
 
 --Auxillary function to check for consecutive red nodes
 checkNodes :: Ord a => RBT a -> Bool
---If you reach a leaf then true
 checkNodes LeafRB = True
 checkNodes (NodeRB c l x r) =  
-  --If the colour is red and the children are black then check the subtrees, else false
   if (c == Red) then (if (isBlack l && isBlack r) then checkNodes l && checkNodes r else False)
-                --Else check the subtree
                 else checkNodes l && checkNodes r
 
 --Auxillary function to check if a node is black
 isBlack :: Ord a => RBT a -> Bool
---Count leaves as black
 isBlack LeafRB = True
 isBlack (NodeRB c l x r) = 
-  --If the colour is black return true
   if (c == Black) then True
                   else False
 
@@ -198,16 +192,19 @@ balR l x (NodeRB Red l2 x2 r) =
   NodeRB Red l x (NodeRB Black l2 x2 r)
 balR (NodeRB Black l x r) x2 r2 =
   balance Black (NodeRB Red l x r) x2 r2
-balR (NodeRB Red (NodeRB Black l x r) x2 r2) x3 r3 =
-  NodeRB Red (balance Black l x (redRoot r2)) x2 (NodeRB Black r3 x3 r)
+balR (NodeRB Red l x (NodeRB Black l2 x2 r)) x3 r3 =
+  NodeRB Red (balance Black (redRoot l) x l2) x2 (NodeRB Black r x3 r3)
 
 fuse :: Ord a => RBT a -> RBT a -> RBT a
 fuse LeafRB x = x
 fuse x LeafRB = x
+fuse t1@(NodeRB Black l x r) (NodeRB Red l2 x2 r2) = NodeRB Red (fuse t1 l2) x2 r2
+fuse (NodeRB Red l x r) t3@(NodeRB Black l2 x2 r2) = NodeRB Red l x (fuse r t3)
 fuse (NodeRB Red l x r) (NodeRB Red l2 x2 r2) =
   let s = fuse r l2
   in case s of
     (NodeRB Red s1 y s2) -> (NodeRB Red (NodeRB Red l x s1) y (NodeRB Red s2 x2 r2))
+    (NodeRB Black s1 y s2) -> balR (NodeRB Black s x2 r2) x r
     LeafRB -> (NodeRB Red l x (NodeRB Red s x2 r2))
 fuse (NodeRB Black l x r) (NodeRB Black l2 x2 r2) =
   let s = fuse r l2
